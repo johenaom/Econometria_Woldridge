@@ -1,0 +1,54 @@
+##################################
+##### Ejemplo 2.5 Wooldridge #####
+##################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("vote1")
+force("vote1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(vote1)
+names(vote1)
+class(vote1)
+
+# Analisis de correlacion
+cor.test(vote1$voteA, vote1$shareA)
+# es 0.9253 correlacion directa alta
+
+# Regresion
+voteModel <- lm(voteA ~ shareA, data=vote1, na.action = na.exclude) # elimina 
+#variables omitidas
+summary (voteModel) # visualiza los resultados de la regresion
+
+# vote = b0 + b1 share => vote_est = 26.81221 + 0.46383 share
+
+voteModel$coefficients # visualiza los coeficientes estimados
+
+# Visualizacion en ggplot2
+graf2_5 = ggplot(ceosal1, aes(shareA, voteA))
+graf2_5
+graf2_5 + geom_point()
+graf2_5 + geom_point() + geom_smooth(method="lm", colour="Red")
+
+# otra forma de graficar la dispersion sin ggplot
+plot (vote1$voteA~shareA)
+abline(voteModel, col="red")
+
+# Otra forma de graficar la dispersión
+plot(vote1$shareA, vote1$voteA)
+abline(voteModel)
+
+# Estimacion a educ=8
+vote_est=26.8122141 + (0.4638269 * 50)
+vote_est
