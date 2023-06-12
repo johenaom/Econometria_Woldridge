@@ -1,0 +1,58 @@
+##################################
+##### Ejemplo 2.3 Wooldridge #####
+##################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("ceosal1")
+force("ceosal1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(ceosal1)
+names(ceosal1)
+class(ceosal1)
+
+# Analisis de correlacion
+cor.test(ceosal1$salary, ceosal1$roe)
+# es 0.11 correlacion directa baja 
+# Regresion lineal
+salaryModel <- lm(salary ~ roe, data=ceosal1, na.action = na.exclude) # elimina 
+#variables omitidas
+summary (salaryModel) # visualiza los resultados de la regresion
+
+# Calculo de la correlacion de Pearson
+sqrt(0.01319) # el valor insertado corresponde al Multiple R-squared (Nivel de confianza)
+
+# Salary = intercepto + B roe + error => Salary = 963.19 + 18.50 roe
+
+salaryModel$coefficients # visualiza los coeficientes estimados
+
+
+
+# Visualizacion en ggplot2
+graf2_3 = ggplot(ceosal1, aes(roe, salary))
+graf2_3
+graf2_3 + geom_point()
+graf2_3 + geom_point() + geom_smooth(method="lm", colour="Red")
+
+# otra forma de graficar la dispersion sin ggplot
+plot (ceosal1$salary~roe, ylim = c(0, 4000))
+abline(salaryModel, col="red")
+
+# otra forma de hacer un grafico de dispersion
+plot(ceosal1$roe, ceosal1$salary, ylim = c(0, 4000))
+abline (salaryModel)
+
+# Estimacion a roe=30
+salary_est=963.19134 + (18.50119 * 30)
+salary_est
