@@ -1,0 +1,64 @@
+##################################
+##### Ejemplo 2.6 Wooldridge #####
+##################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("ceosal1")
+force("ceosal1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(ceosal1)
+names(ceosal1)
+class(ceosal1)
+
+# Analisis de correlacion
+cor.test(ceosal1$salary, ceosal1$roe)
+# es 0.1148417 correlacion directa baja
+
+# Regresion
+salary2Model <- lm(salary ~ roe, data=ceosal1, na.action = na.exclude) # elimina 
+#variables omitidas
+summary (salary2Model) # visualiza los resultados de la regresion
+
+# salary = b0 + b1 roe => salary_est = 963.19 + 18.50 roe
+
+salary2Model$coefficients # visualiza los coeficientes estimados
+
+# obtener valores y residuos estimados
+sal.hat <- fitted(salary2Model)
+u.hat <- resid(salary2Model)
+
+# replicar la tabla del ejemplo 2.6 de wooldridge
+sal <- ceosal1$salary
+roe <- ceosal1$roe
+
+cbind(roe, sal, sal.hat, u.hat) [1:15,]
+
+# Visualizacion en ggplot2
+graf2_3 = ggplot(ceosal1, aes(roe, salary))
+graf2_3
+graf2_3 + geom_point()
+graf2_3 + geom_point() + geom_smooth(method="lm", colour="Red")
+
+# otra forma de graficar la dispersion sin ggplot
+plot (ceosal1$salary~roe, ylim = c(0, 4000))
+abline(salaryModel, col="red")
+
+# otra forma de hacer un grafico de dispersion
+plot(ceosal1$roe, ceosal1$salary, ylim = c(0, 4000))
+abline (salaryModel)
+
+# Estimacion a roe=56.3
+salary_est=963.19134 + (18.50119 * 56.3)
+salary_est
