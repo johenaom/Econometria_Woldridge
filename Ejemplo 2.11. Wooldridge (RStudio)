@@ -1,0 +1,30 @@
+###################################
+##### Ejemplo 2.11 Wooldridge #####
+###################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("ceosal1")
+force("ceosal1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(ceosal1)
+names(ceosal1)
+class(ceosal1)
+
+# Modelo de regresión
+
+salary3Model <- lm(log(salary)~log(sales), data=ceosal1, na.action = na.exclude)
+summary (salary3Model)
+
+salary3Model$coefficients # visualiza los coeficientes estimados
