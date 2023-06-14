@@ -1,0 +1,74 @@
+##################################
+##### Ejemplo 2.7 Wooldridge #####
+##################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("wage1")
+force("wage1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(wage1)
+names(wage1)
+class(wage1)
+
+# Analisis de correlacion
+cor.test(wage1$wage, wage1$educ)
+# es 0.406 correlacion directa media
+
+# Regresion
+wageModel <- lm(wage ~ educ, data=wage1, na.action = na.exclude) # elimina 
+#variables omitidas
+summary (wageModel) # visualiza los resultados de la regresion
+
+# wage = b0 + b1 educ => wage_est = -0.90485 + 0.54136 educ
+
+wageModel$coefficients # visualiza los coeficientes estimados
+
+# obtener valores y residuos estimados
+b.hat <- coef(wageModel)
+wage.hat <- fitted(wageModel)
+u.hat <- resid(wageModel)
+
+# verificar propiedad 1 de estadísticos de MCO (sum u.hat = 0)
+mean(u.hat)
+
+# verificar propiedad 2 de estadísticos de MCO (Cov (u.hat, educ)=0)
+cor(wage1$educ, u.hat)
+
+# verificar propiedad 3 de estadisticos de MCO (promedio está sobre la línea de regresión es el intercepto)
+mean(wage1$wage)
+
+# b.hat[1]+b.hat[2] * mena(wage1$educ)
+b.hat[1] + b.hat[2] * mean(wage1$edu)
+
+# Visualizacion en ggplot2
+graf2_4 = ggplot(wage1, aes(educ, wage))
+graf2_4
+graf2_4 + geom_point()
+graf2_4 + geom_point() + geom_smooth(method="lm", colour="Red")
+
+# otra forma de graficar la dispersion sin ggplot
+plot (wage1$wage~educ)
+abline(wageModel, col="red")
+
+# Estimacion a educ=8
+wage_est=-0.90485 + (0.54136 * 8)
+wage_est
+
+
+# Tabla de datos
+wag <- wage1$wage
+edu <- wage1$educ
+
+cbind(wag, edu, wage.hat, u.hat) [1:30,]
