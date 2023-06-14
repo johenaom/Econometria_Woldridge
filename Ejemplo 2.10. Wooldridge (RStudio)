@@ -1,0 +1,71 @@
+##################################
+##### Ejemplo 2.10 Wooldridge #####
+##################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("wage1")
+force("wage1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(wage1)
+names(wage1)
+class(wage1)
+
+# Analisis de correlacion
+cor.test(wage1$wage, wage1$educ)
+# es 0.406 correlacion directa media
+
+# Regresion
+wageModel2 <- lm(log(wage) ~ educ, data=wage1, na.action = na.exclude) # elimina 
+#variables omitidas
+summary (wageModel) # visualiza los resultados de la regresion
+
+# logwage = b0 + b1 educ => wage_est = 0.583775 + 0.08274437 educ
+
+wageModel2$coefficients # visualiza los coeficientes estimados
+
+# Gráfica de salario en logaritmo
+## crear vectores con información
+wage.hat <- fitted(wageModel2)
+u.hat <- resid(wageModel2)
+wage <- wage1$wage
+logwage <- log(wage)
+educ <- wage1(educ)
+expeduc <- exp(educ)
+
+## agregar al dataframe las variables creadas
+wage1$u.hat <- u.hat
+wage1$wage.hat <- wage.hat
+wage1$logwage <- logwage
+wage1$expeduc <- expeduc
+
+
+
+## Grafica 2_6 wooldridge
+
+wageModel3 <- lm(wage ~ expeduc, data=wage1, na.action = na.exclude) 
+
+wage3.hat <- fitted(wageModel3)
+u.hat3 <- resid(wageModel3)
+
+wage1$wage3.hat <- wage3.hat
+wage1$u.hat3 <- u.hat3
+
+graf2_6 = ggplot(wage1, aes(educ, wage3.hat))
+graf2_6
+graf2_6 + geom_point()
+graf2_6 + geom_point() + geom_smooth(method="loess", colour="Red")
+
+
+plot (wage1$wage3.hat ~ wage1$educ, xlim = c(10, 18))
