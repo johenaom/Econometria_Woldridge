@@ -1,0 +1,53 @@
+##################################
+##### Ejemplo 2.8 Wooldridge #####
+##################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("ceosal1")
+force("ceosal1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(ceosal1)
+names(ceosal1)
+class(ceosal1)
+
+# cargar datos
+data("ceosal1")
+force("ceosal1") # ver los datos
+# Antes de empezar nuestro modelo
+attach(ceosal1)
+names(ceosal1)
+class(ceosal1)
+
+# Analisis de correlacion
+cor.test(ceosal1$salary, ceosal1$roe)
+# es 0.1148417 correlacion directa baja
+
+# Regresion
+salary2Model <- lm(salary ~ roe, data=ceosal1, na.action = na.exclude) # elimina 
+#variables omitidas
+summary (salary2Model) # visualiza los resultados de la regresion
+
+# Calcular el valor de predicción y residuales
+sal.hat <- fitted(salary2Model)
+u.hat <- resid(salary2Model)
+
+# Calcular el R^2
+sal <- ceosal1$salary
+
+var(sal.hat)/var(sal)
+
+1 - var(u.hat) / var(sal)
+
+cor(sal, sal.hat)^2
