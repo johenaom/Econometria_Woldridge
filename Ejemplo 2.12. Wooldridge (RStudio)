@@ -1,0 +1,23 @@
+##################################
+##### Ejemplo 2.12 Wooldridge #####
+##################################
+
+#install.packages("wooldridge") # Instalar paquete de datos Wooldridge
+#remotes::install_github("JustinMShea/wooldridge") # Lugar donde estan los datos//
+# en github
+library(wooldridge) # cargar libreria de Wooldridge
+
+# Otras liberias necesarias para la regresion lineal
+library (tidyverse)
+library (car)
+library (boot)
+library (QuantPsyc)
+library (ggplot2)
+
+# cargar datos
+data("meap93")
+force("meap93") # ver los datos
+# Antes de empezar nuestro modelo
+attach(meap93)
+names(meap93)
+class(meap93)
